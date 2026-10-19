@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystery World - Explore the Unknown</title>
+<style>
+:root{--bg:#050711;--panel:#10182b;--text:#f4f7ff;--muted:#aab8d5;--cyan:#00e5ff;--purple:#9b5cff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;line-height:1.6}
+#stars{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.star{position:absolute;background:white;border-radius:50%;animation:twinkle 2s infinite alternate}
+@keyframes twinkle{to{opacity:.2;transform:scale(.6)}}
+header{position:sticky;top:0;background:#070a16ee;border-bottom:1px solid #263958;z-index:5;padding:12px}
+nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+nav a{color:white;text-decoration:none;padding:6px 10px;border-radius:20px;font-size:13px}
+nav a:hover{background:#7040b9}
+.container{width:min(1000px,92%);margin:auto}
+.hero{text-align:center;padding:65px 10px 35px}
+.logo{font-size:clamp(40px,9vw,70px);line-height:1.1;font-weight:900;background:linear-gradient(90deg,#00e5ff,#b66cff,#ff62cb);background-clip:text;-webkit-background-clip:text;color:transparent}
+p{color:var(--muted)}
+h2{color:var(--cyan)}
+section{padding:30px 0;scroll-margin-top:75px}
+button{padding:10px 14px;margin:4px;border:1px solid var(--cyan);border-radius:10px;background:#162344;color:white;cursor:pointer}
+button:hover{background:#47306f}
+input{width:100%;padding:12px;background:#10182b;color:white;border:1px solid #344669;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px}
+.card,.panel{background:var(--panel);border:1px solid #263958;border-radius:15px;padding:17px}
+.card{transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:var(--cyan)}
+.emoji{font-size:40px}
+.hidden{display:none!important}
+.solar{height:300px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:15px;background:radial-gradient(circle,#151a3c,#02040b 75%)}
+.sun{width:42px;height:42px;border-radius:50%;background:#ffb32b;box-shadow:0 0 35px #ff7b00;z-index:2}
+.orbit{position:absolute;width:var(--size);height:var(--size);border:1px solid #53658a66;border-radius:50%;animation:spin var(--speed) linear infinite}
+.orbit span{position:absolute;right:-5px;top:50%;width:10px;height:10px;border-radius:50%;background:var(--color);box-shadow:0 0 10px var(--color)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orbit:nth-child(2){--size:70px;--speed:4s;--color:#bdb5a5}
+.orbit:nth-child(3){--size:100px;--speed:6s;--color:#e6a65d}
+.orbit:nth-child(4){--size:135px;--speed:9s;--color:#328bff}
+.orbit:nth-child(5){--size:170px;--speed:12s;--color:#ff6147}
+.orbit:nth-child(6){--size:205px;--speed:16s;--color:#d7b486}
+.orbit:nth-child(7){--size:240px;--speed:20s;--color:#eee0ae}
+.quiz-option{display:block;width:100%;text-align:left;margin:8px 0}
+#matrix{display:block;width:100%;height:160px;background:#020605;border-radius:10px}
+footer{text-align:center;padding:30px;border-top:1px solid #263958}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<header><nav>
+<a href="#home">Home</a><a href="#solar">Solar System</a><a href="#planets">Planets</a><a href="#facts">Science Facts</a><a href="#quiz">Quiz</a><a href="#secret">Secret Room</a>
+</nav></header>
+
+<main class="container">
+<section class="hero" id="home">
+<div>🌌 WELCOME, SPACE EXPLORER</div>
+<h1 class="logo">MYSTERY<br>WORLD</h1>
+<p>Explore the mysteries of space, planets, black holes and amazing science. Discover the universe and test your knowledge!</p>
+<button onclick="go('solar')">Explore Space 🚀</button>
+<button onclick="theme()">Change Theme 🌗</button>
+<div class="grid" style="margin-top:20px">
+<div class="card"><h3>⭐ XP Points</h3><strong id="xp">0 XP</strong></div>
+<div class="card"><h3>🏆 Level</h3><strong id="level">Level 1</strong></div>
+</div>
+</section>
+
+<section>
+<h2>🔎 Search Mystery World</h2>
+<input id="search" placeholder="Search planets, black holes, science..." oninput="searchSite()">
+<p id="searchResult"></p>
+</section>
+
+<section id="solar">
+<h2>🪐 Solar System</h2>
+<p>Watch this simplified animated model of planets orbiting the Sun. Sizes and distances are not to scale.</p>
+<div class="solar"><div class="sun"></div>
+<div class="orbit"><span></span></div><div class="orbit"><span></span></div>
+<div class="orbit"><span></span></div><div class="orbit"><span></span></div>
+<div class="orbit"><span></span></div><div class="orbit"><span></span></div></div>
+<div class="panel" style="margin-top:14px">
+<h3>Choose a Planet</h3>
+<div id="planetButtons"></div>
+<p id="planetInfo">Tap a planet to learn something interesting!</p>
+</div>
+</section>
+
+<section id="planets">
+<h2>🌍 Planet Explorer</h2>
+<div class="grid">
+<article class="card searchable" data-words="mercury smallest closest sun"><div class="emoji">☿️</div><h3>Mercury</h3><p>The smallest planet and closest to the Sun.</p><button onclick="discover('Mercury')">Discover +10 XP</button></article>
+<article class="card searchable" data-words="venus hottest atmosphere"><div class="emoji">🟠</div><h3>Venus</h3><p>The hottest planet due to its thick atmosphere.</p><button onclick="discover('Venus')">Discover +10 XP</button></article>
+<article class="card searchable" data-words="earth home water life"><div class="emoji">🌍</div><h3>Earth</h3><p>Our home planet has liquid water and known life.</p><button onclick="discover('Earth')">Discover +10 XP</button></article>
+<article class="card searchable" data-words="mars red planet"><div class="emoji">🔴</div><h3>Mars</h3><p>The Red Planet, explored by robotic missions.</p><button onclick="discover('Mars')">Discover +10 XP</button></article>
+<article class="card searchable" data-words="jupiter largest storm"><div class="emoji">🟤</div><h3>Jupiter</h3><p>The largest planet, famous for its giant storms.</p><button onclick="discover('Jupiter')">Discover +10 XP</button></article>
+<article class="card searchable" data-words="saturn rings"><div class="emoji">🪐</div><h3>Saturn</h3><p>A gas giant with beautiful rings made mostly of ice and rock.</p><button onclick="discover('Saturn')">Discover +10 XP</button></article>
+<article class="card searchable" data-words="uranus ice giant tilted"><div class="emoji">🔵</div><h3>Uranus</h3><p>An ice giant with an extreme axial tilt.</p><button onclick="discover('Uranus')">Discover +10 XP</button></article>
+<article class="card searchable" data-words="neptune blue wind"><div class="emoji">🔷</div><h3>Neptune</h3><p>A distant blue ice giant with very fast winds.</p><button onclick="discover('Neptune')">Discover +10 XP</button></article>
+</div>
+</section>
+
+<section id="facts">
+<h2>🕳️ Black Hole Mysteries</h2>
+<div class="grid">
+<div class="card searchable" data-words="black hole gravity light"><h3>What is a Black Hole?</h3><p>A region of space where gravity is so strong that light cannot escape from inside its event horizon.</p></div>
+<div class="card searchable" data-words="time gravity relativity"><h3>Time and Gravity</h3><p>Strong gravity can make time pass differently compared with places where gravity is weaker.</p></div>
+<div class="card searchable" data-words="sunlight earth eight minutes"><h3>Sunlight</h3><p>Sunlight takes about 8 minutes and 20 seconds to reach Earth.</p></div>
+<div class="card searchable" data-words="sound space vacuum"><h3>Sound in Space</h3><p>Sound cannot travel through the near-vacuum of space like it travels through air.</p></div>
+<div class="card searchable" data-words="neutron star dense"><h3>Neutron Stars</h3><p>Neutron stars are incredibly dense remnants of certain massive stars.</p></div>
+<div class="card searchable" data-words="moon earth distance"><h3>The Moon</h3><p>The Moon is slowly moving away from Earth by a few centimetres per year.</p></div>
+</div>
+<button onclick="discover('Black Hole Mysteries')">Explore Black Holes +10 XP</button>
+</section>
+
+<section id="quiz">
+<h2>🧠 Space Quiz</h2>
+<div class="panel">
+<p id="questionCount"></p><h3 id="question"></h3>
+<div id="answers"></div><p id="feedback"></p>
+<button id="next" class="hidden" onclick="nextQuestion()">Next Question ➜</button>
+<button id="again" class="hidden" onclick="startQuiz()">Play Again ↻</button>
+<p id="score"></p>
+</div>
+</section>
+
+<section>
+<h2>💻 Matrix Rain</h2>
+<canvas id="matrix"></canvas>
+<button onclick="toggleMatrix()" id="matrixButton">Stop Matrix</button>
+</section>
+
+<section id="secret">
+<h2>🔐 Secret Room</h2>
+<div class="panel">
+<p>Enter the secret code. Hint: SPACE</p>
+<input id="secretCode" placeholder="Secret code">
+<button onclick="unlockSecret()">Unlock</button>
+<p id="secretText"></p>
+</div>
+</section>
+
+<section>
+<h2>🚀 About Mystery World</h2>
+<div class="panel"><p>A small science project for curious minds. Keep asking questions and exploring the universe!</p><button onclick="discover('Curiosity')">Keep Exploring +10 XP</button></div>
+</section>
+</main>
+
+<footer>🌌 MYSTERY WORLD — Explore the Unknown</footer>
+
+<script>
+const data={
+Mercury:"Mercury is the smallest planet and completes one orbit in about 88 Earth days.",
+Venus:"Venus is the hottest planet because its thick atmosphere traps heat.",
+Earth:"Earth is our home planet and has liquid water on its surface.",
+Mars:"Mars is called the Red Planet because of iron minerals in its soil.",
+Jupiter:"Jupiter is the largest planet in our Solar System.",
+Saturn:"Saturn is a gas giant with spectacular rings.",
+Uranus:"Uranus rotates with an extreme tilt.",
+Neptune:"Neptune is a distant ice giant with powerful winds."
+};
+let xp=0;const discovered=new Set();
+function go(id){document.getElementById(id).scrollIntoView({behavior:"smooth"})}
+function updateXP(){document.getElementById("xp").textContent=xp+" XP";document.getElementById("level").textContent="Level "+(Math.floor(xp/50)+1)}
+function discover(name){if(discovered.has(name))return;discovered.add(name);xp+=10;updateXP()}
+function theme(){if(document.body.dataset.light){document.body.style.background="#f0f4ff";document.body.style.color="#15213a";document.body.dataset.light=""}else{document.body.style.background="#050711";document.body.style.color="#f4f7ff";document.body.dataset.light="yes"}}
+const pb=document.getElementById("planetButtons");
+Object.keys(data).forEach(name=>{const b=document.createElement("button");b.textContent=name;b.onclick=()=>{document.getElementById("planetInfo").textContent=data[name];discover(name)};pb.appendChild(b)});
+function searchSite(){const q=document.getElementById("search").value.toLowerCase().trim();let count=0;document.querySelectorAll(".searchable").forEach(el=>{const text=(el.innerText+" "+el.dataset.words).toLowerCase();const ok=!q||text.includes(q);el.classList.toggle("hidden",!ok);if(ok&&q)count++});document.getElementById("searchResult").textContent=q?(count?count+" result(s) found":"No results found"):""}
+const questions=[
+{q:"Which is the largest planet?",a:["Earth","Jupiter","Mars","Mercury"],c:1},
+{q:"Which planet is called the Red Planet?",a:["Venus","Neptune","Mars","Saturn"],c:2},
+{q:"What is at the centre of our Solar System?",a:["Earth","Moon","Sun","Jupiter"],c:2},
+{q:"Which planet is famous for its rings?",a:["Saturn","Mercury","Mars","Venus"],c:0},
+{q:"Can sound travel through the near-vacuum of space?",a:["Yes","No, not without a medium","Only at night","Only near Earth"],c:1}
+];
+let qi=0,score=0,answered=false;
+function startQuiz(){qi=0;score=0;document.getElementById("score").textContent="";document.getElementById("again").classList.add("hidden");renderQ()}
+function renderQ(){answered=false;const q=questions[qi];document.getElementById("questionCount").textContent="Question "+(qi+1)+" of "+questions.length;document.getElementById("question").textContent=q.q;document.getElementById("feedback").textContent="";document.getElementById("next").classList.add("hidden");const box=document.getElementById("answers");box.innerHTML="";q.a.forEach((a,i)=>{const b=document.createElement("button");b.className="quiz-option";b.textContent=String.fromCharCode(65+i)+". "+a;b.onclick=()=>answer(i);box.appendChild(b)})}
+function answer(i){if(answered)return;answered=true;const q=questions[qi];if(i===q.c){score++;xp+=10;updateXP();document.getElementById("feedback").textContent="Correct! +10 XP 🎉"}else document.getElementById("feedback").textContent="Correct answer: "+q.a[q.c];document.querySelectorAll(".quiz-option").forEach(b=>b.disabled=true);if(qi<questions.length-1)document.getElementById("next").classList.remove("hidden");else{document.getElementById("score").textContent="Final score: "+score+" / "+questions.length;document.getElementById("again").classList.remove("hidden")}}
+function nextQuestion(){if(!answered)return;qi++;renderQ()}
+function unlockSecret(){if(document.getElementById("secretCode").value.trim().toUpperCase()==="SPACE"){document.getElementById("secretText").textContent="🌌 SECRET UNLOCKED! You are a Cosmic Explorer!";discover("Secret Room")}else document.getElementById("secretText").textContent="Access denied. Hint: SPACE"}
+(function(){const box=document.getElementById("stars");for(let i=0;i<90;i++){const s=document.createElement("span");s.className="star";let z=Math.random()*3+1;s.style.width=z+"px";s.style.height=z+"px";s.style.left=Math.random()*100+"%";s.style.top=Math.random()*100+"%";s.style.animationDelay=Math.random()*3+"s";box.appendChild(s)}})();
+const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");let running=true,drops=[];
+function setupMatrix(){const w=canvas.clientWidth;canvas.width=w;canvas.height=160;drops=Array(Math.max(1,Math.floor(w/14))).fill(1)}
+function drawMatrix(){if(!running)return;ctx.fillStyle="rgba(0,0,0,.12)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#00ff70";ctx.font="14px monospace";for(let i=0;i<drops.length;i++){ctx.fillText(String.fromCharCode(0x30A0+Math.random()*96),i*14,drops[i]*14);if(drops[i]*14>canvas.height&&Math.random()>.975)drops[i]=0;drops[i]++}}
+function toggleMatrix(){running=!running;document.getElementById("matrixButton").textContent=running?"Stop Matrix":"Start Matrix"}
+setupMatrix();setInterval(drawMatrix,60);window.addEventListener("resize",setupMatrix);startQuiz();updateXP();
+</script>
+</body>
+</html>
